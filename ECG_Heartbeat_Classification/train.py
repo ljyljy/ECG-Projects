@@ -6,9 +6,12 @@ import math
 from include.data import get_data_set
 from include.model import model, lr_decay
 
+# dataset 
 X_train, y_train, X_test, y_test = get_data_set()
 tf.set_random_seed(21)
+# training examples
 n_obs = X_train.shape[0]
+
 
 X, Y, output, y_pred_cls, global_step, learning_rate = model("model_ujh_f000")
 global_accuracy = 0
@@ -66,12 +69,13 @@ def train(epoch):
         i_global, _, batch_loss, batch_acc = sess.run(
                         [global_step, optimizer, loss, accuracy],
                         feed_dict={X:batch_xs, Y:batch_ys, learning_rate:lr_decay(epoch, n_obs, _BATCH_SIZE)})
-        
+        # duration time 持续时间
         duration = time() - start_time
         
         if s % 10 == 0:
             percentage = int(round((s/batch_size)*100))
             
+            # 显示进度条
             bar_len = 29
             filled_len = int((bar_len*int(percentage))/100)
             bar = '=' * filled_len + '>' + '-' * (bar_len - filled_len)
@@ -89,6 +93,7 @@ def test_and_save(_global_step, epoch):
     global epoch_start
     
     i = 0
+    # predict
     predicted_class = np.zeros(shape=len(X_test), dtype=np.int)
     
     while i < len(X_test):
